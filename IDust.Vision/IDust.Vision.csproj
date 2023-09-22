@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MVTec.HalconDotNet" Version="23050.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MvCamCtrl.Net">
+      <HintPath>..\..\..\Program Files (x86)\MVS\Development\DotNet\AnyCpu\MvCamCtrl.Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
