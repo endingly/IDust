@@ -1,4 +1,5 @@
-﻿using HalconDotNet;
+﻿using System.Net.Mime;
+using HalconDotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,61 @@ namespace IDust.Calibrating;
 /// </summary>
 public class Calibrater
 {
+    #region member
+    /// <summary>
+    /// 变换用的仿射矩阵
+    /// </summary>
+    public HTuple? homMat2D;
+
+    /// <summary>
+    /// 待处理的图像宽度
+    /// </summary>
+    private int image_width;
+
+    /// <summary>
+    /// 待处理的图像高度
+    /// </summary>
+    private int image_height;
+
+    /// <summary>
+    /// 此标定所使用的相机标定类型
+    /// </summary>
+    private CalibratType type;
+
+    /// <summary>
+    /// 模板所使用的仿射矩阵存储路径
+    /// </summary>
+    private readonly string homMat_storePath;
+
+    /// <summary>
+    /// 现在传入数据所计算出来的仿射矩阵存储路径
+    /// </summary>
+    private readonly string homMatNew_storePath;
+
+    /// <summary>
+    /// 其他标定数据存储路径
+    /// </summary>
+    private readonly string calibraterData_storePath;
+    #endregion
+
+    #region constructor
+    public Calibrater(string calibrate_name, CalibratType type, int image_width = 3072, int image_height = 2048)
+    {
+        string s = Environment.CurrentDirectory;
+        homMat_storePath = Path.Combine(s, calibrate_name, "CalHomMat.tup");
+        homMatNew_storePath = Path.Combine(s, calibrate_name, "CalHomMatNew.tup");
+        calibraterData_storePath = Path.Combine(s, calibrate_name, "CalData.xml");
+    }
+    #endregion
+
+    #region static function
     /// <summary>
     /// 从两条线以及一个已知点中计算变换后的点位置以及角度
     /// </summary>
     /// <param name="line_one">第一条线</param>
     /// <param name="line_two">第二条线</param>
     /// <param name="point">需要变换的点</param>
-    public static void GetShapesAngleFrom_llp(in Line line_one, in Line line_two, in Point point)
+    public static Tuple<double, double, double> GetShapesAngleFrom_llp(in Line line_one, in Line line_two, in Point point)
     {
         // 前两者是函数的输入，要求必须至少有两个点
         HTuple px = new HTuple();
@@ -42,6 +91,9 @@ public class Calibrater
         HOperatorSet.AffineTransPoint2d(homMat2D, point.x, point.y, out HTuple rp_x, out HTuple rp_y);
         // 计算变换的角度
         double angle = GetAngleFromTwoLines(in line_one, in line_two);
+        Tuple<double, double, double> tuple = new(rp_x, rp_y, angle);
+
+        return tuple;
     }
 
     /// <summary>
@@ -57,5 +109,6 @@ public class Calibrater
                              out HTuple angle);
         return angle;
     }
+    #endregion
 }
 
