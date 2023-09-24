@@ -5,32 +5,35 @@ using IDust.Base;
 namespace IDust.Communicate.Plc;
 
 /// <summary>
-/// 连接状态
-/// </summary>
-public enum ConnectStatus
-{
-    /// <summary>
-    /// 未知
-    /// </summary>
-    unkown,
-    /// <summary>
-    /// 已连接
-    /// </summary>
-    connected,
-    /// <summary>
-    /// 未连接
-    /// </summary>
-    disconnected
-}
-
-/// <summary>
 /// Plc 的基类
 /// </summary>
 public class PlcBase
 {
+    #region member
+    protected bool _connectStatus;
+    protected bool _messageReadable;
     public PlcParma parma;
 
-    public ConnectStatus status;
+    public bool Status
+    {
+        get
+        {
+            return _connectStatus;
+        }
+        set
+        {
+            if (_connectStatus != value)
+            {
+                _connectStatus = value;
+                PlcConnectStatusChanged?.Invoke(parma.UserDefineIndex, _connectStatus == true);
+            }
+        }
+    }
+
+    public event D_void_int_bool_Parma? PlcConnectStatusChanged;
+
+    public event D_void_int_string_int_Parma? PlcShortStatusChanged;
+    #endregion
 
     #region virtual methods
     public virtual RunResult ConnectServer()

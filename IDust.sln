@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDust.Calibrating", "IDust.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDust.Communicate", "IDust.Communicate\IDust.Communicate.csproj", "{F6CC9078-78D5-4DDE-885D-76B98678A555}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IDust.Test", "IDust.Test\IDust.Test.csproj", "{81B02732-4F27-4B98-A94B-AA72942C9126}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F6CC9078-78D5-4DDE-885D-76B98678A555}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6CC9078-78D5-4DDE-885D-76B98678A555}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6CC9078-78D5-4DDE-885D-76B98678A555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81B02732-4F27-4B98-A94B-AA72942C9126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81B02732-4F27-4B98-A94B-AA72942C9126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81B02732-4F27-4B98-A94B-AA72942C9126}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81B02732-4F27-4B98-A94B-AA72942C9126}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

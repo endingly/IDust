@@ -17,14 +17,14 @@ namespace IDust.Base
         public RunResult()
         {
             isSuccess = false;
-            message = ErrorCode.Unkown.ToMessage();
-            errorCode = ErrorCode.Unkown;
+            message = ErrorCode.Fail.ToMessage();
+            errorCode = ErrorCode.Fail;
         }
         public RunResult(string msg)
         {
             isSuccess = false;
             message = msg;
-            errorCode = ErrorCode.Unkown;
+            errorCode = ErrorCode.Fail;
         }
 
         public RunResult(ErrorCode ec, string msg)
@@ -51,6 +51,15 @@ namespace IDust.Base
         public static RunResult CreateSuccessResult(string msg)
         {
             return new RunResult(true, ErrorCode.OK, msg);
+        }
+        #endregion
+
+        #region public methods
+        public void SetSuccess(string successMsg)
+        {
+            isSuccess = true;
+            message = successMsg;
+            errorCode = ErrorCode.OK;
         }
         #endregion
     }

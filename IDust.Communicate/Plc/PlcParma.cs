@@ -1,4 +1,5 @@
-﻿using IDust.Base;
+﻿using HslCommunication.Core;
+using IDust.Base;
 using System.IO.Ports;
 
 namespace IDust.Communicate.Plc;
@@ -54,28 +55,6 @@ public enum PlcBrand
     MelsecBinary
 }
 
-/// <summary>
-/// 与 PLC 通信时的格式，详见 <see cref="https://cloud.tencent.com/developer/article/1967303"/>
-/// </summary>
-public enum PlcDataFormat
-{
-    /// <summary>
-    /// 按照顺序排序
-    /// </summary>
-    ABCD,
-    /// <summary>
-    /// 按照单字反转
-    /// </summary>
-    BADC,
-    /// <summary>
-    /// 按照双字反转 (大部分PLC默认排序方法)
-    /// </summary>
-    CDAB,
-    /// <summary>
-    /// 按照倒序排序
-    /// </summary>
-    DCBA
-}
 
 /// <summary>
 /// 串口设置的参数类
@@ -152,7 +131,12 @@ public struct PlcParma
     /// <summary>
     /// 数据格式
     /// </summary>
-    public PlcDataFormat DataFormat = PlcDataFormat.CDAB;
+    public DataFormat DataFormat = DataFormat.CDAB;
+    /// <summary>
+    /// 用户自定义标签序号，用来表示第几个PLC
+    /// <para>从0开始</para>
+    /// </summary>
+    public int UserDefineIndex = 0;
     /// <summary>
     /// 是否自动重连
     /// </summary>

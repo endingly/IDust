@@ -7,6 +7,7 @@ public enum ErrorCode
 {
     Unkown,
     OK,
+    Fail,
 }
 
 public static class ErrorCodeExtension
@@ -22,6 +23,7 @@ public static class ErrorCodeExtension
         {
             ErrorCode.Unkown => "未知错误",
             ErrorCode.OK => "成功",
+            ErrorCode.Fail => "失败",
             _ => "未知错误",
         };
     }
