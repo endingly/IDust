@@ -3,7 +3,7 @@ namespace IDust.Calibrating;
 /// <summary>
 /// 相机的标定类型
 /// </summary>
-public enum CalibratType
+public enum CalibrateType
 {
     OnlyNine,
 
@@ -41,4 +41,30 @@ public enum CalibratType
     /// 全部
     /// </summary>
     All
+}
+
+/// <summary>
+/// 对于标定的应用方法
+/// </summary>
+public enum CalibrateApplyType
+{
+    /// <summary>
+    /// 原模板的仿射变换
+    /// </summary>
+    Source_HomMat,
+
+    /// <summary>
+    /// 新入图像的仿射变换
+    /// </summary>
+    New_HomMat,
+
+    /// <summary>
+    /// 原仿射变化加偏移量
+    /// </summary>
+    Source_HomMat_Offset,
+
+    /// <summary>
+    /// 新仿射变化加偏移量
+    /// </summary>
+    New_HomMat_Offset
 }

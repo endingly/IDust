@@ -32,7 +32,7 @@ public class Calibrater
     /// <summary>
     /// 此标定所使用的相机标定类型
     /// </summary>
-    private CalibratType type;
+    private CalibrateApplyType Ctype;
 
     /// <summary>
     /// 模板所使用的仿射矩阵存储路径
@@ -51,12 +51,13 @@ public class Calibrater
     #endregion
 
     #region constructor
-    public Calibrater(string calibrate_name, CalibratType type, int image_width = 3072, int image_height = 2048)
+    public Calibrater(string calibrate_name, CalibrateApplyType type, int image_width = 3072, int image_height = 2048)
     {
         string s = Environment.CurrentDirectory;
         homMat_storePath = Path.Combine(s, calibrate_name, "CalHomMat.tup");
         homMatNew_storePath = Path.Combine(s, calibrate_name, "CalHomMatNew.tup");
-        calibraterData_storePath = Path.Combine(s, calibrate_name, "CalData.xml");
+        calibraterData_storePath = Path.Combine(s, calibrate_name, "CalData.json");
+        Ctype = type;
     }
     #endregion
 
