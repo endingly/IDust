@@ -5,17 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="MvCamCtrl.Net" Version="4.1.0" />
     <PackageReference Include="MVTec.HalconDotNet" Version="23050.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="MvCamCtrl.Net">
-      <HintPath>..\..\..\Program Files (x86)\MVS\Development\DotNet\AnyCpu\MvCamCtrl.Net.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

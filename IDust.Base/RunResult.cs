@@ -17,49 +17,38 @@ namespace IDust.Base
         public RunResult()
         {
             isSuccess = false;
-            message = ErrorCode.Fail.ToMessage();
-            errorCode = ErrorCode.Fail;
-        }
-        public RunResult(string msg)
-        {
-            isSuccess = false;
-            message = msg;
-            errorCode = ErrorCode.Fail;
+            message = ErrorCode.Unkown.GetString();
+            errorCode = ErrorCode.Unkown;
         }
 
-        public RunResult(ErrorCode ec, string msg)
+        public RunResult(ErrorCode er)
         {
-            isSuccess = false;
-            message = msg;
-            errorCode = ec;
-        }
-
-        public RunResult(bool flag, ErrorCode ec, string msg)
-        {
-            isSuccess = flag;
-            message = msg;
-            errorCode = ec;
+            message = er.GetString();
+            errorCode = er;
+            if (er >= ErrorCode.PlcConnected)
+            {
+                isSuccess = true;
+            }
+            else
+            {
+                isSuccess = false;
+            }
         }
         #endregion
 
-        #region static methods
-        public static RunResult CreateSuccessResult()
+        #region public method
+        public void Reset(ErrorCode er)
         {
-            return new RunResult(true, ErrorCode.OK, ErrorCode.OK.ToMessage());
-        }
-
-        public static RunResult CreateSuccessResult(string msg)
-        {
-            return new RunResult(true, ErrorCode.OK, msg);
-        }
-        #endregion
-
-        #region public methods
-        public void SetSuccess(string successMsg)
-        {
-            isSuccess = true;
-            message = successMsg;
-            errorCode = ErrorCode.OK;
+            message = er.GetString();
+            errorCode = er;
+            if (er >= ErrorCode.PlcConnected)
+            {
+                isSuccess = true;
+            }
+            else
+            {
+                isSuccess = false;
+            }
         }
         #endregion
     }

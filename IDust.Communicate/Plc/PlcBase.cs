@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using HslCommunication.ModBus;
 using IDust.Base;
 
 namespace IDust.Communicate.Plc;
@@ -13,8 +14,13 @@ public class PlcBase
     protected bool _connectStatus;
     protected bool _messageReadable;
     public PlcParma parma;
+    protected bool _reConnectEnable;
+    protected System.Timers.Timer timer = new System.Timers.Timer(3000);
 
-    public bool Status
+    /// <summary>
+    /// 状态属性获取与设置，当状态改变时触发事件
+    /// </summary>
+    protected bool Status
     {
         get
         {
@@ -25,7 +31,15 @@ public class PlcBase
             if (_connectStatus != value)
             {
                 _connectStatus = value;
-                PlcConnectStatusChanged?.Invoke(parma.UserDefineIndex, _connectStatus == true);
+                PlcConnectStatusChanged?.Invoke(parma.UserDefineIndex, value);
+                if (value == true)
+                {
+                    this.timer.Enabled = false;
+                }
+                else
+                {
+                    this.timer.Enabled = true;
+                }
             }
         }
     }
@@ -33,6 +47,9 @@ public class PlcBase
     public event D_void_int_bool_Parma? PlcConnectStatusChanged;
 
     public event D_void_int_string_int_Parma? PlcShortStatusChanged;
+    #endregion
+
+    #region ctor
     #endregion
 
     #region virtual methods
@@ -51,10 +68,9 @@ public class PlcBase
         throw new NotImplementedException();
     }
 
-    public virtual RunResult SetStation(int station)
+    public virtual bool SetStation(int station)
     {
-        parma.Station = station;
-        return RunResult.CreateSuccessResult();
+        throw new NotImplementedException();
     }
 
     public virtual RunResult ReadValue<T>(string address, out T value) where T : struct
@@ -67,32 +83,44 @@ public class PlcBase
         throw new NotImplementedException();
     }
 
-    public virtual RunResult ReadValue(string address, string value)
+    public virtual RunResult ReadValue(string address, int length, out string value)
     {
         throw new NotImplementedException();
     }
 
-    public virtual RunResult ReadUnicodeString(string address, string value)
+    public virtual RunResult ReadUnicodeString(string address, int length, out string value)
     {
         throw new NotImplementedException();
     }
 
-    public virtual RunResult WriteValue<T>(string address, out T value) where T : struct
+    public virtual RunResult WriteValue<T>(string address, T value) where T : struct
     {
         throw new NotImplementedException();
     }
 
-    public virtual RunResult WriteValue<T>(string address, int length, out T[] value) where T : struct
+    public virtual RunResult WriteValue<T>(string address, int length, T[] value) where T : struct
     {
         throw new NotImplementedException();
     }
 
-    public virtual RunResult WriteValue(string address, string value)
+    public virtual RunResult WriteValue(string address, int length, string value)
     {
         throw new NotImplementedException();
     }
 
-    public virtual RunResult WriteUnicodeString(string address, string value)
+    public virtual RunResult WriteUnicodeString(string address, int length, string value)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// 清空某一段寄存器的值
+    /// </summary>
+    /// <param name="address">连续寄存器起始地址</param>
+    /// <param name="length">长度，单位为字节</param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public virtual RunResult ClearValue(string address, int length)
     {
         throw new NotImplementedException();
     }
