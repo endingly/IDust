@@ -25,6 +25,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IDust.Base\IDust.Base.csproj" />
+    <ProjectReference Include="..\IDust.Calibrating\IDust.Calibrating.csproj" />
+    <ProjectReference Include="..\IDust.Communicate\IDust.Communicate.csproj" />
+    <ProjectReference Include="..\IDust.Vision\IDust.Vision.csproj" />
   </ItemGroup>
 
 </Project>
