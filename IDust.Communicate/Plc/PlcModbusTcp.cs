@@ -7,6 +7,7 @@ using IDust.Base;
 using System.Text;
 
 namespace IDust.Communicate.Plc;
+#pragma warning disable CS8500  // 确认以下操作皆为 struct 对象，故而此警告可忽略
 
 public class PlcModbusTcp : PlcBase
 {
@@ -33,7 +34,7 @@ public class PlcModbusTcp : PlcBase
     #region private method
     private void setPlcDataFormat()
     {
-        modbusTcpNet.DataFormat = parma.DataFormat;
+        modbusTcpNet.DataFormat = (DataFormat)parma.DataFormat;
     }
 
     private RunResult Init()
