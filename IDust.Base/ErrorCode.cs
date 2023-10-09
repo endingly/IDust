@@ -19,6 +19,8 @@ public enum ErrorCode : short
     PlcFailToWrite,
     PlcFailToClearData,
     PlcFailToDisconnect,
+    PlcSetStationFail,
+
 
     // Success
     PlcConnected = 1000,
@@ -28,6 +30,7 @@ public enum ErrorCode : short
     PlcWriteSuccess,
     PlcClearDataSuccess,
     PlcDisconnectSuccess,
+    PlcSetStationSuccess
 }
 
 public static class ErrorCodeExtension
@@ -50,6 +53,7 @@ public static class ErrorCodeExtension
             ErrorCode.PlcFailToWrite => "PLC 写入数据失败.",
             ErrorCode.PlcFailToClearData => "PLC 清空数据失败.",
             ErrorCode.PlcFailToDisconnect => "PLC 断开连接失败.",
+            ErrorCode.PlcSetStationFail => "PLC 设置站号失败.",
 
             ErrorCode.PlcConnected => "PLC 已连接.",
             ErrorCode.PlcReconnectSuccess => "PLC 重连成功.",
@@ -58,6 +62,7 @@ public static class ErrorCodeExtension
             ErrorCode.PlcWriteSuccess => "PLC 写入数据成功.",
             ErrorCode.PlcClearDataSuccess => "PLC 清空数据成功.",
             ErrorCode.PlcDisconnectSuccess => "PLC 断开连接成功.",
+            ErrorCode.PlcSetStationSuccess => "PLC 设置站号成功.",
             _ => "未知错误.",
         };
     }

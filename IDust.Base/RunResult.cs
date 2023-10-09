@@ -34,6 +34,20 @@ namespace IDust.Base
                 isSuccess = false;
             }
         }
+
+        public RunResult(ErrorCode er, Exception ex)
+        {
+            message = er.GetString() + "->" + ex.Message;
+            errorCode = er;
+            if (er >= ErrorCode.PlcConnected)
+            {
+                isSuccess = true;
+            }
+            else
+            {
+                isSuccess = false;
+            }
+        }
         #endregion
 
         #region public method

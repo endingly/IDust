@@ -16,7 +16,7 @@ public class PlcModbusTcp : PlcBase
     #endregion
 
     #region ctor
-    public PlcModbusTcp(PlcParma parma)
+    public PlcModbusTcp(in PlcParma parma)
     {
         this.parma = parma;
         modbusTcpNet = new ModbusTcpNet();
@@ -64,7 +64,7 @@ public class PlcModbusTcp : PlcBase
     /// 重新连接
     /// </summary>
     /// <returns></returns>
-    private void reConnect(object sender, System.Timers.ElapsedEventArgs e)
+    protected override void reConnect(object sender, System.Timers.ElapsedEventArgs e)
     {
         modbusTcpNet.IpAddress = parma.IpAddress;
         modbusTcpNet.Port = parma.Port;
@@ -273,7 +273,7 @@ public class PlcModbusTcp : PlcBase
         var r = modbusTcpNet?.ConnectClose();
         if (r != null && r.IsSuccess)
         {
-            _connectStatus = false;     // 不触发事件
+            Status = false;     // 触发事件
             return new RunResult(ErrorCode.PlcDisconnectSuccess);
         }
         else

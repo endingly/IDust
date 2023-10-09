@@ -55,36 +55,6 @@ public enum PlcBrand
     MelsecBinary
 }
 
-
-/// <summary>
-/// 串口设置的参数类
-/// </summary>
-public struct SerialPortParma
-{
-    /// <summary>
-    /// 串口名
-    /// </summary>
-    public string SerialPortName = "COM1";
-    /// <summary>
-    /// 波特率
-    /// </summary>
-    public int SerialBaudRate = 9600;
-    /// <summary>
-    /// 串口校验
-    /// </summary>
-    public Parity SerialParity = Parity.None;
-    /// <summary>
-    /// 数据位
-    /// </summary>
-    public int SerialDataBits = 7;
-    /// <summary>
-    /// 停止位
-    /// </summary>
-    public StopBits SerialStopBits = StopBits.One;
-
-    public SerialPortParma() { }
-}
-
 /// <summary>
 /// PLC 的类型
 /// </summary>
@@ -165,7 +135,14 @@ public struct PlcParma
     /// <summary>
     /// 串口设置的参数
     /// </summary>
-    public SerialPortParma serialPortParma;
+    public SerialPort serialPortParma = new SerialPort
+    {
+        PortName = "COM1",
+        BaudRate = 9600,
+        Parity = Parity.None,
+        DataBits = 7,
+        StopBits = StopBits.One
+    };
 
     /// <summary>
     /// 构造函数

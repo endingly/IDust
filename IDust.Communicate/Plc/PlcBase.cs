@@ -15,6 +15,10 @@ public class PlcBase
     protected bool _messageReadable;
     public PlcParma parma;
     protected bool _reConnectEnable;
+
+    /// <summary>
+    /// 此定时器用于自动重连
+    /// </summary>
     protected System.Timers.Timer timer = new System.Timers.Timer(3000);
 
     /// <summary>
@@ -36,7 +40,7 @@ public class PlcBase
                 {
                     this.timer.Enabled = false;
                 }
-                else
+                else if (value == false && _reConnectEnable)
                 {
                     this.timer.Enabled = true;
                 }
@@ -53,6 +57,11 @@ public class PlcBase
     #endregion
 
     #region virtual methods
+    protected virtual void reConnect(object sender,System.Timers.ElapsedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
     public virtual RunResult ConnectServer()
     {
         throw new NotImplementedException();
