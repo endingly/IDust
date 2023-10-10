@@ -144,6 +144,8 @@ public struct PlcParma
         StopBits = StopBits.One
     };
 
+    public bool IsShortConnect = false;
+
     /// <summary>
     /// 构造函数
     /// </summary>

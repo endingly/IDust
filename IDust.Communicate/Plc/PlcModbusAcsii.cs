@@ -13,6 +13,7 @@ public class PlcModbusAscii : PlcBase
     #endregion
 
     #region ctor
+#pragma warning disable CS8618,CS8602
     public PlcModbusAscii(in PlcParma parma)
     {
         this.parma = parma;
@@ -22,6 +23,7 @@ public class PlcModbusAscii : PlcBase
             client.DataFormat = parma.DataFormat;
         }
     }
+#pragma warning restore CS8618
     #endregion
 
     #region private methods
@@ -30,12 +32,16 @@ public class PlcModbusAscii : PlcBase
         RunResult r = new RunResult();
         try
         {
-            client?.Close();
             byte.TryParse(parma.Station.ToString(), out byte station);
-            client ??= new ModbusAscii(station)
+            if (client != null)
             {
-                ReceiveTimeout = parma.ReceiveTimeOut
-            };
+                client.Close();
+            }
+            else
+            {
+                client = new ModbusAscii(station);
+            }
+            client.ReceiveTimeout = parma.ReceiveTimeOut;
             client.SerialPortInni(sp =>
             {
                 sp.PortName = parma.serialPortParma.PortName;
@@ -71,28 +77,31 @@ public class PlcModbusAscii : PlcBase
 
     public override RunResult ConnectServer()
     {
-        Init();
-        try
+        var r = Init();
+        if (r.isSuccess && !parma.IsShortConnect)
         {
-            client.Open();
-            Status = client.IsOpen();
-            if (Status)
+            try
             {
-                SetStation(parma.Station);
-                client.LogNet.WriteInfo(ErrorCode.PlcConnected.GetString());
-                return new RunResult(ErrorCode.PlcConnected);
+                client.Open();
+                Status = client.IsOpen();
+                if (Status)
+                {
+                    SetStation(parma.Station);
+                    client.LogNet.WriteInfo(ErrorCode.PlcConnected.GetString());
+                    return new RunResult(ErrorCode.PlcConnected);
+                }
+                else
+                {
+                    client.LogNet.WriteError(ErrorCode.PlcNotConnect.GetString());
+                    return new RunResult(ErrorCode.PlcNotConnect);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                client.LogNet.WriteError(ErrorCode.PlcNotConnect.GetString());
-                return new RunResult(ErrorCode.PlcNotConnect);
+                return new RunResult(ErrorCode.PlcNotConnect, ex);
             }
         }
-        catch (Exception ex)
-        {
-            return new RunResult(ErrorCode.PlcNotConnect, ex);
-        }
-
+        return r;
     }
 
     protected override void reConnect(object sender, ElapsedEventArgs e)
@@ -114,24 +123,6 @@ public class PlcModbusAscii : PlcBase
             client.LogNet.WriteError(ErrorCode.PlcFailToReconnect.GetString());
         }
     }
-
-    //public override RunResult ConnectShort()
-    //{
-    //    Init();
-    //    client.Open();
-    //    Status = client.IsOpen();
-    //    if (Status)
-    //    {
-    //        SetStation(parma.Station);
-    //        client.LogNet.WriteInfo(ErrorCode.PlcConnected.GetString());
-    //        return new RunResult(ErrorCode.PlcConnected);
-    //    }
-    //    else
-    //    {
-    //        client.LogNet.WriteError(ErrorCode.PlcNotConnect.GetString());
-    //        return new RunResult(ErrorCode.PlcNotConnect);
-    //    }   
-    //}
 
     public override RunResult ConnectClose()
     {
@@ -204,6 +195,74 @@ public class PlcModbusAscii : PlcBase
             }
         }
         return new RunResult(ErrorCode.PlcFailToRead);
+    }
+
+    public override RunResult WriteValue<T>(string address, T value)
+    {
+        unsafe
+        {
+            var vsize = sizeof(T);
+            byte[] buffer = new byte[vsize];
+            fixed (byte* p = buffer)
+            {
+                *(T*)p = value;
+            }
+            OperateResult operate_result = client.Write(address, buffer);
+            if (operate_result.IsSuccess)
+            {
+                return new RunResult(ErrorCode.PlcWriteSuccess);
+            }
+        }
+        return new RunResult(ErrorCode.PlcFailToWrite);
+    }
+
+    public override RunResult WriteValue<T>(string address, int length, T[] value)
+    {
+        unsafe
+        {
+            var vsize = sizeof(T);
+            byte[] buffer = new byte[length * vsize];
+            fixed (byte* p = buffer)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    *(T*)(p + i * vsize) = value[i];
+                }
+            }
+            OperateResult operate_result = client.Write(address, buffer);
+            if (operate_result.IsSuccess)
+            {
+                return new RunResult(ErrorCode.PlcWriteSuccess);
+            }
+        }
+        return new RunResult(ErrorCode.PlcFailToWrite);
+    }
+
+    public override RunResult WriteValue(string address, int length, string value)
+    {
+        OperateResult operate_result = client.Write(address, value);
+        if (operate_result.IsSuccess)
+        {
+            return new RunResult(ErrorCode.PlcWriteSuccess);
+        }
+        return new RunResult(ErrorCode.PlcFailToWrite);
+    }
+
+    public override RunResult ClearValue(string address, int length)
+    {
+        byte[] buffer = new byte[length];
+        Array.Fill(buffer, byte.MinValue);
+        var r = WriteValue(address, length, buffer);
+        if (r.isSuccess)
+        {
+            r.Reset(ErrorCode.PlcClearDataSuccess);
+            return r;
+        }
+        else
+        {
+            r.Reset(ErrorCode.PlcFailToClearData);
+            return r;
+        }
     }
     #endregion
 }

@@ -7,7 +7,6 @@ using IDust.Base;
 using System.Text;
 
 namespace IDust.Communicate.Plc;
-#pragma warning disable CS8500  // 确认以下操作皆为 struct 对象，故而此警告可忽略
 
 public class PlcModbusTcp : PlcBase
 {
@@ -103,7 +102,8 @@ public class PlcModbusTcp : PlcBase
     public override RunResult ConnectServer()
     {
         RunResult init_result = Init();
-        if (init_result.isSuccess)
+        // 如果是短链接，则不需要调用 modbusTcpNet.ConnectServer()，可以直接读写
+        if (init_result.isSuccess && !parma.IsShortConnect)
         {
             OperateResult connect_result = modbusTcpNet.ConnectServer();
             modbusTcpNet.DataFormat = parma.DataFormat;
@@ -270,6 +270,11 @@ public class PlcModbusTcp : PlcBase
 
     public override RunResult ConnectClose()
     {
+        if (parma.IsShortConnect)
+        {
+            Status = false;
+            return new RunResult(ErrorCode.PlcDisconnectSuccess);
+        }
         var r = modbusTcpNet?.ConnectClose();
         if (r != null && r.IsSuccess)
         {

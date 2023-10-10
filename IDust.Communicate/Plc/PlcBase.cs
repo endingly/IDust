@@ -82,12 +82,12 @@ public class PlcBase
         throw new NotImplementedException();
     }
 
-    public virtual RunResult ReadValue<T>(string address, out T value) where T : struct
+    public virtual RunResult ReadValue<T>(string address, out T value) where T : unmanaged
     {
         throw new NotImplementedException();
     }
 
-    public virtual RunResult ReadValue<T>(string address, int length, out T[] value) where T : struct
+    public virtual RunResult ReadValue<T>(string address, int length, out T[] value) where T : unmanaged
     {
         throw new NotImplementedException();
     }
@@ -102,12 +102,12 @@ public class PlcBase
         throw new NotImplementedException();
     }
 
-    public virtual RunResult WriteValue<T>(string address, T value) where T : struct
+    public virtual RunResult WriteValue<T>(string address, T value) where T : unmanaged
     {
         throw new NotImplementedException();
     }
 
-    public virtual RunResult WriteValue<T>(string address, int length, T[] value) where T : struct
+    public virtual RunResult WriteValue<T>(string address, int length, T[] value) where T : unmanaged
     {
         throw new NotImplementedException();
     }
