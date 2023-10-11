@@ -6,14 +6,18 @@ using System.Timers;
 
 namespace IDust.Communicate;
 
-public class PlcModbusAscii : PlcBase
+public class PlcModbusAscii : PlcBase, IPlcReadWriteable<ModbusAscii>
 {
     #region Members
     private ModbusAscii client;
+
+    ModbusAscii IPlcReadWriteable<ModbusAscii>.CoreClient => client;
+
+    public IPlcReadWriteable<ModbusAscii> ReadWriteHandle => this;
     #endregion
 
     #region ctor
-#pragma warning disable CS8618,CS8602
+#pragma warning disable CS8618, CS8602
     public PlcModbusAscii(in PlcParma parma)
     {
         this.parma = parma;
@@ -138,131 +142,5 @@ public class PlcModbusAscii : PlcBase
         }
     }
 
-    public override RunResult ReadValue(string address, int length, out string value)
-    {
-        var r = client.ReadString(address, (ushort)length);
-        if (r.IsSuccess)
-        {
-            value = r.Content;
-            return new RunResult(ErrorCode.PlcReadSuccess);
-        }
-        else
-        {
-            value = string.Empty;
-            client.LogNet.WriteError(IDust.Base.LogKeyWord.PLC.GetString(),
-                                     ErrorCode.PlcFailToRead.GetString() + "->" + r.ToMessageShowString());
-            return new RunResult(ErrorCode.PlcFailToRead);
-        }
-    }
-
-    public override RunResult ReadValue<T>(string address, out T value)
-    {
-        value = default;
-        unsafe
-        {
-            var vsize = sizeof(T);
-            OperateResult<byte[]> operate_result = client.Read(address, (ushort)vsize);
-            if (operate_result.IsSuccess)
-            {
-                fixed (byte* p = operate_result.Content)
-                {
-                    value = *(T*)p;
-                }
-                return new RunResult(ErrorCode.PlcReadSuccess);
-            }
-        }
-        return new RunResult(ErrorCode.PlcFailToRead);
-    }
-
-    public override RunResult ReadValue<T>(string address, int length, out T[] value)
-    {
-        value = [];
-        unsafe
-        {
-            var vsize = sizeof(T);
-            OperateResult<byte[]> operate_result = client.Read(address, (ushort)(length * vsize));
-            if (operate_result.IsSuccess)
-            {
-                value = new T[length];
-                fixed (byte* p = operate_result.Content)
-                {
-                    for (int i = 0; i < length; i++)
-                    {
-                        value[i] = *(T*)(p + i * vsize);
-                    }
-                }
-                return new RunResult(ErrorCode.PlcReadSuccess);
-            }
-        }
-        return new RunResult(ErrorCode.PlcFailToRead);
-    }
-
-    public override RunResult WriteValue<T>(string address, T value)
-    {
-        unsafe
-        {
-            var vsize = sizeof(T);
-            byte[] buffer = new byte[vsize];
-            fixed (byte* p = buffer)
-            {
-                *(T*)p = value;
-            }
-            OperateResult operate_result = client.Write(address, buffer);
-            if (operate_result.IsSuccess)
-            {
-                return new RunResult(ErrorCode.PlcWriteSuccess);
-            }
-        }
-        return new RunResult(ErrorCode.PlcFailToWrite);
-    }
-
-    public override RunResult WriteValue<T>(string address, int length, T[] value)
-    {
-        unsafe
-        {
-            var vsize = sizeof(T);
-            byte[] buffer = new byte[length * vsize];
-            fixed (byte* p = buffer)
-            {
-                for (int i = 0; i < length; i++)
-                {
-                    *(T*)(p + i * vsize) = value[i];
-                }
-            }
-            OperateResult operate_result = client.Write(address, buffer);
-            if (operate_result.IsSuccess)
-            {
-                return new RunResult(ErrorCode.PlcWriteSuccess);
-            }
-        }
-        return new RunResult(ErrorCode.PlcFailToWrite);
-    }
-
-    public override RunResult WriteValue(string address, int length, string value)
-    {
-        OperateResult operate_result = client.Write(address, value);
-        if (operate_result.IsSuccess)
-        {
-            return new RunResult(ErrorCode.PlcWriteSuccess);
-        }
-        return new RunResult(ErrorCode.PlcFailToWrite);
-    }
-
-    public override RunResult ClearValue(string address, int length)
-    {
-        byte[] buffer = new byte[length];
-        Array.Fill(buffer, byte.MinValue);
-        var r = WriteValue(address, length, buffer);
-        if (r.isSuccess)
-        {
-            r.Reset(ErrorCode.PlcClearDataSuccess);
-            return r;
-        }
-        else
-        {
-            r.Reset(ErrorCode.PlcFailToClearData);
-            return r;
-        }
-    }
     #endregion
 }

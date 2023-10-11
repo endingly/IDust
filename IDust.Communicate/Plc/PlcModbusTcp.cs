@@ -8,19 +8,31 @@ using System.Text;
 
 namespace IDust.Communicate.Plc;
 
-public class PlcModbusTcp : PlcBase
+public class PlcModbusTcp : PlcBase, IPlcReadWriteable<ModbusTcpNet>
 {
     #region member
     private ModbusTcpNet modbusTcpNet;
+
+    ModbusTcpNet IPlcReadWriteable<ModbusTcpNet>.CoreClient
+    {
+        get
+        {
+            return modbusTcpNet;
+        }
+    }
+
+    public IPlcReadWriteable<ModbusTcpNet> ReadWriteHandle => this;
     #endregion
 
     #region ctor
+#pragma warning disable CS8618, CS8622
     public PlcModbusTcp(in PlcParma parma)
     {
         this.parma = parma;
-        modbusTcpNet = new ModbusTcpNet();
+        Init();
         timer.Elapsed += reConnect;
     }
+#pragma warning restore CS8618
     #endregion
 
     #region public method
@@ -38,25 +50,35 @@ public class PlcModbusTcp : PlcBase
 
     private RunResult Init()
     {
-        RunResult r = new RunResult();
         try
         {
-            modbusTcpNet?.ConnectClose();
-            byte.TryParse(parma.Station.ToString(), out byte station);
-            modbusTcpNet = new ModbusTcpNet(parma.IpAddress, parma.Port, station)
+            if (modbusTcpNet != null)
             {
-                ConnectTimeOut = parma.ConnectTimeOut,
-                ReceiveTimeOut = parma.ReceiveTimeOut
-            };
-            r.Reset(ErrorCode.PlcInitSuccess);
+                modbusTcpNet.ConnectClose();
+                modbusTcpNet.IpAddress = parma.IpAddress;
+                modbusTcpNet.Port = parma.Port;
+                modbusTcpNet.Station = (byte)parma.Station;
+                modbusTcpNet.ConnectTimeOut = parma.ConnectTimeOut;
+                modbusTcpNet.ReceiveTimeOut = parma.ReceiveTimeOut;
+                modbusTcpNet.IsStringReverse = parma.StrReverse;
+                modbusTcpNet.DataFormat = parma.DataFormat;
+            }
+            else
+            {
+                modbusTcpNet = new ModbusTcpNet(parma.IpAddress, parma.Port, (byte)parma.Station)
+                {
+                    ConnectTimeOut = parma.ConnectTimeOut,
+                    ReceiveTimeOut = parma.ReceiveTimeOut,
+                    IsStringReverse = parma.StrReverse,
+                    DataFormat = parma.DataFormat,
+                };
+            }
+            return new RunResult(ErrorCode.PlcInitSuccess);
         }
         catch (Exception ex)
         {
-            modbusTcpNet.LogNet.WriteException(LogKeyWord.PLC.GetString(),
-                                               ErrorCode.PlcFailToInit.GetString(),
-                                               ex);
+            return new RunResult(ErrorCode.PlcFailToInit, ex);
         }
-        return r;
     }
 
     /// <summary>
@@ -106,11 +128,8 @@ public class PlcModbusTcp : PlcBase
         if (init_result.isSuccess && !parma.IsShortConnect)
         {
             OperateResult connect_result = modbusTcpNet.ConnectServer();
-            modbusTcpNet.DataFormat = parma.DataFormat;
-            modbusTcpNet.IsStringReverse = parma.StrReverse;
             if (connect_result.IsSuccess)
             {
-                SetStation(parma.Station);
                 this.Status = true;
                 init_result.Reset(ErrorCode.PlcConnected);
             }
@@ -122,150 +141,6 @@ public class PlcModbusTcp : PlcBase
             return init_result;
         }
         return init_result;
-    }
-
-    public override RunResult ReadValue(string address, int length, out string value)
-    {
-        value = string.Empty;
-        OperateResult<string> operate_result = modbusTcpNet.ReadString(address, (ushort)length);
-        if (operate_result.IsSuccess)
-        {
-            value = operate_result.Content;
-            return new RunResult(ErrorCode.PlcReadSuccess);
-        }
-        return new RunResult(ErrorCode.PlcFailToRead);
-    }
-
-    public override RunResult ReadValue<T>(string address, int length, out T[] value)
-    {
-        value = [];
-        unsafe
-        {
-            var vsize = sizeof(T);
-            OperateResult<byte[]> operate_result = modbusTcpNet.Read(address, (ushort)(length * vsize));
-            if (operate_result.IsSuccess)
-            {
-                value = new T[length];
-                fixed (byte* p = operate_result.Content)
-                {
-                    for (int i = 0; i < length; i++)
-                    {
-                        value[i] = *(T*)(p + i * vsize);
-                    }
-                }
-                return new RunResult(ErrorCode.PlcReadSuccess);
-            }
-        }
-        return new RunResult(ErrorCode.PlcFailToRead);
-    }
-
-    public override RunResult ReadValue<T>(string address, out T value)
-    {
-        value = default;
-        unsafe
-        {
-            var vsize = sizeof(T);
-            OperateResult<byte[]> operate_result = modbusTcpNet.Read(address, (ushort)vsize);
-            if (operate_result.IsSuccess)
-            {
-                fixed (byte* p = operate_result.Content)
-                {
-                    value = *(T*)p;
-                }
-                return new RunResult(ErrorCode.PlcReadSuccess);
-            }
-        }
-        return new RunResult(ErrorCode.PlcFailToRead);
-    }
-
-    public override RunResult ReadUnicodeString(string address, int length, out string value)
-    {
-        value = string.Empty;
-        OperateResult<byte[]> operate_result = modbusTcpNet.Read(address, (ushort)length);
-        if (operate_result.IsSuccess)
-        {
-            value = modbusTcpNet.ByteTransform.TransString(operate_result.Content, Encoding.Unicode);
-            return new RunResult(ErrorCode.PlcReadSuccess);
-        }
-        return new RunResult(ErrorCode.PlcFailToRead);
-    }
-
-    public override RunResult WriteValue<T>(string address, T value)
-    {
-        unsafe
-        {
-            var vsize = sizeof(T);
-            byte[] buffer = new byte[vsize];
-            fixed (byte* p = buffer)
-            {
-                *(T*)p = value;
-            }
-            OperateResult operate_result = modbusTcpNet.Write(address, buffer);
-            if (operate_result.IsSuccess)
-            {
-                return new RunResult(ErrorCode.PlcWriteSuccess);
-            }
-        }
-        return new RunResult(ErrorCode.PlcFailToWrite);
-    }
-
-    public override RunResult WriteValue<T>(string address, int length, T[] value)
-    {
-        unsafe
-        {
-            var vsize = sizeof(T);
-            byte[] buffer = new byte[length * vsize];
-            fixed (byte* p = buffer)
-            {
-                for (int i = 0; i < length; i++)
-                {
-                    *(T*)(p + i * vsize) = value[i];
-                }
-            }
-            OperateResult operate_result = modbusTcpNet.Write(address, buffer);
-            if (operate_result.IsSuccess)
-            {
-                return new RunResult(ErrorCode.PlcWriteSuccess);
-            }
-        }
-        return new RunResult(ErrorCode.PlcFailToWrite);
-    }
-
-    public override RunResult WriteValue(string address, int length, string value)
-    {
-        OperateResult operate_result = modbusTcpNet.Write(address, value);
-        if (operate_result.IsSuccess)
-        {
-            return new RunResult(ErrorCode.PlcWriteSuccess);
-        }
-        return new RunResult(ErrorCode.PlcFailToWrite);
-    }
-
-    public override RunResult WriteUnicodeString(string address, int length, string value)
-    {
-        OperateResult operate_result = modbusTcpNet.Write(address, value, Encoding.Unicode);
-        if (operate_result.IsSuccess)
-        {
-            return new RunResult(ErrorCode.PlcWriteSuccess);
-        }
-        return new RunResult(ErrorCode.PlcFailToWrite);
-    }
-
-    public override RunResult ClearValue(string address, int length)
-    {
-        byte[] buffer = new byte[length];
-        Array.Fill(buffer, byte.MinValue);
-        var r = WriteValue(address, length, buffer);
-        if (r.isSuccess)
-        {
-            r.Reset(ErrorCode.PlcClearDataSuccess);
-            return r;
-        }
-        else
-        {
-            r.Reset(ErrorCode.PlcFailToClearData);
-            return r;
-        }
     }
 
     public override RunResult ConnectClose()
