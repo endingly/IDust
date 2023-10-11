@@ -565,6 +565,12 @@ public interface IPlcReadWriteable<T> where T : IReadWriteDevice
         }
     }
 
+    /// <summary>
+    /// 清空寄存器
+    /// </summary>
+    /// <param name="address">地址</param>
+    /// <param name="length">长度，以字节为单位</param>
+    /// <returns></returns>
     public RunResult ClearValue(string address, int length)
     {
         byte[] buffer = new byte[length];

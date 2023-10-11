@@ -54,7 +54,7 @@ namespace IDust.Test.Plc
         }
 
         [Fact]
-        public void Test_Write()
+        public void Test_WriteAndClear()
         {
             PlcParma parma = new PlcParma();
             parma.IpAddress = "127.0.0.1";
@@ -71,12 +71,21 @@ namespace IDust.Test.Plc
 
             PlcModbusTcp client = new PlcModbusTcp(in parma);
             var rcs = client.ConnectServer();
+
+            // 测试写入
             var r = client.ReadWriteHandle.WriteValue("1000", 1);
             var op = server.ReadInt32("1000", 1);
+            Assert.True(op.IsSuccess && r.isSuccess && (op.Content[0] == 1));
+            // 测试清空
+            var cop = client.ReadWriteHandle.ClearValue("1000", 4);
+            var cop2 = server.ReadInt32("1000", 1);
+            Assert.True(cop.isSuccess && cop2.IsSuccess);
+            Output.WriteLine(cop2.Content[0].ToString("X"));
 
             client.ConnectClose();
             server.ServerClose();
-            Assert.True(op.IsSuccess && r.isSuccess && (op.Content[0] == 1));
         }
+
+
     }
 }
