@@ -22,7 +22,7 @@ namespace IDust.Test.Plc
             parma.Port = 502;
             PlcModbusTcp client = new PlcModbusTcp(in parma);
 
-            var rcs = client.ConnectServer();
+            var rcs = client.ConnectOpen();
             var rcc = client.ConnectClose();
             server.ServerClose();
             Assert.True(rcs.isSuccess && rcc.isSuccess);
@@ -45,7 +45,7 @@ namespace IDust.Test.Plc
             var op = server.Write("1000", 1);
 
             PlcModbusTcp client = new PlcModbusTcp(in parma);
-            var rcs = client.ConnectServer();
+            var rcs = client.ConnectOpen();
             var r = client.ReadWriteHandle.ReadValue("1000", out int value);
 
             client.ConnectClose();
@@ -70,7 +70,7 @@ namespace IDust.Test.Plc
             
 
             PlcModbusTcp client = new PlcModbusTcp(in parma);
-            var rcs = client.ConnectServer();
+            var rcs = client.ConnectOpen();
 
             // 测试写入
             var r = client.ReadWriteHandle.WriteValue("1000", 1);

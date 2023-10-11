@@ -3,7 +3,7 @@ using HslCommunication.Core;
 using IDust.Base;
 using System.Text;
 
-namespace IDust.Communicate;
+namespace IDust.Communicate.Plc;
 
 public interface IPlcReadWriteable<T> where T : IReadWriteDevice
 {
@@ -11,7 +11,7 @@ public interface IPlcReadWriteable<T> where T : IReadWriteDevice
     /// 获取由 hsl 库提供的核心客户端
     /// <para>需要重载</para>
     /// </summary>
-    protected T CoreClient { get; } 
+    protected T CoreClient { get; }
 
     public IPlcReadWriteable<T> ReadWriteHandle { get; }
 
