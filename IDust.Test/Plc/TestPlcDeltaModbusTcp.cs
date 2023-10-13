@@ -1,20 +1,26 @@
-﻿using IDust.Communicate.Plc;
-using HslCommunication.ModBus;
+﻿using HslCommunication.ModBus;
+using HslCommunication.Profinet.Delta;
+using IDust.Communicate.Plc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit.Abstractions;
-using HslCommunication.Core;
 
 namespace IDust.Test.Plc
 {
-    public class TestPlcModbusTcp : TestBase, IDisposable
+    public class TestPlcDeltaModbusTcp : TestBase, IDisposable
     {
         private ModbusTcpServer server;
-        private PlcModbusTcp client;
+        private PlcDeltaModbusTcp client;
 
-        public TestPlcModbusTcp(ITestOutputHelper tempOutput) : base(tempOutput)
+        public TestPlcDeltaModbusTcp(ITestOutputHelper tempOutput) : base(tempOutput)
         {
             PlcParma parma = new PlcParma();
             parma.IpAddress = "127.0.0.1";
             parma.Port = 502;
+
             server = new ModbusTcpServer()
             {
                 Port = parma.Port,
@@ -22,8 +28,8 @@ namespace IDust.Test.Plc
                 IsStringReverse = parma.StrReverse,
                 Station = (byte)parma.Station
             };
-            server.ServerStart();
-            client = new PlcModbusTcp(parma);
+            client = new PlcDeltaModbusTcp(parma);
+            server.ServerStart(502);
         }
 
         public void Dispose()
@@ -34,10 +40,9 @@ namespace IDust.Test.Plc
         }
 
         [Fact]
-        public void Test_ConnectAndClose()
+        public void Test_ConnectClose()
         {
-            var rcs = client.ConnectOpen();
-            Assert.True(rcs.isSuccess);
+            Assert.True(client.ConnectOpen().isSuccess);
         }
 
         [Fact]
@@ -61,7 +66,5 @@ namespace IDust.Test.Plc
             Assert.True(cop.isSuccess && cop2.IsSuccess);
             Output.WriteLine(cop2.Content[0].ToString("X"));
         }
-
-
     }
 }

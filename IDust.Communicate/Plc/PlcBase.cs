@@ -66,7 +66,7 @@ public class PlcBase
     #region event
     public event D_void_int_bool_Parma? PlcConnectStatusChanged;
 
-    public event D_void_int_string_int_Parma? PlcShortStatusChanged;
+    //public event D_void_int_string_int_Parma? PlcShortStatusChanged;
     #endregion
 
     #region virtual method

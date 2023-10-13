@@ -103,13 +103,13 @@ public class PlcModbusTcp : PlcBase, IPlcReadWriteable<ModbusTcpNet>, IConnectCl
     {
         if (parma.IsShortConnect)
         {
-            _connectStatus = false;
+            ConnectStatus = false;
             return new RunResult(ErrorCode.PlcDisconnectSuccess);
         }
         var r = modbusTcpNet?.ConnectClose();
         if (r != null && r.IsSuccess)
         {
-            _connectStatus = false;     // 不触发事件
+            ConnectStatus = false;     
             return new RunResult(ErrorCode.PlcDisconnectSuccess);
         }
         else

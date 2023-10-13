@@ -99,7 +99,7 @@ public class PlcModbusAscii : PlcBase, IPlcReadWriteable<ModbusAscii>, IConnectC
         try
         {
             client.Close();
-            _connectStatus = client.IsOpen();
+            ConnectStatus = client.IsOpen();
             return new RunResult(ErrorCode.PlcDisconnectSuccess);
         }
         catch (Exception ex)

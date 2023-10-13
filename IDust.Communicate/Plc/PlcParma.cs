@@ -1,4 +1,5 @@
 ﻿using HslCommunication.Core;
+using HslCommunication.Profinet.Delta;
 using IDust.Base;
 using System.IO.Ports;
 
@@ -150,4 +151,22 @@ public struct PlcParma
     /// 构造函数
     /// </summary>
     public PlcParma() { }
+}
+
+public static class PlcTypeExtension
+{
+    internal static DeltaSeries ToAdapte(this PlcType t)
+    {
+        switch(t)
+        {
+            case PlcType.Delta_AH:
+                 return DeltaSeries.AS;
+            case PlcType.Delta_RTU:
+                 return DeltaSeries.Dvp;
+            case PlcType.Delta_DVP:
+                return DeltaSeries.Dvp;
+            default:
+                return DeltaSeries.Dvp;
+        }
+    }
 }

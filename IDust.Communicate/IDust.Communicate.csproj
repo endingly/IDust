@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HslCommunication" Version="11.6.2" />
+    <PackageReference Include="HslCommunication" Version="11.6.3" />
     <PackageReference Include="IoTClient" Version="1.0.40" />
   </ItemGroup>
 

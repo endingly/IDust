@@ -82,7 +82,7 @@ public class PlcModbusRtu : PlcBase, IPlcReadWriteable<ModbusRtu>, IConnectClose
         try
         {
             _coreClient.Close();
-            _connectStatus = false;
+            ConnectStatus = false;
             return new RunResult(ErrorCode.PlcDisconnectSuccess);
         }
         catch(Exception ex)
