@@ -66,5 +66,12 @@ namespace IDust.Test.Plc
             Assert.True(cop.isSuccess && cop2.IsSuccess);
             Output.WriteLine(cop2.Content[0].ToString("X"));
         }
+
+        [Fact]
+        public void Test_GetDevToAddress()
+        {
+            var r = client.GetDevToAddress("M100");
+            Output.WriteLine(r);
+        }
     }
 }
