@@ -17,16 +17,33 @@ namespace IDust.Communicate.LightController
             OrderStr = oderStr;
         }
 
-        public RunResult ConnectOpen()
-        {
-            serialPort.Open();
-            return new RunResult(ErrorCode.LightControllerConnected);
-        }
-
         public RunResult ConnectClose()
         {
-            serialPort.Close();
-            return new RunResult(ErrorCode.LightControllerDisconnected);
+            try
+            {
+                if (IsConnect)
+                {
+                    serialPort.Close();
+                }
+                return new RunResult(ErrorCode.LightControllerDisconnected);
+            }
+            catch (Exception ex)
+            {
+                return new RunResult(ErrorCode.LightControllerFailToDisconnect, ex);
+            }
+        }
+
+        public RunResult ConnectOpen()
+        {
+            try
+            {
+                serialPort.Open();
+                return new RunResult(ErrorCode.LightControllerConnected);
+            }
+            catch (Exception ex)
+            {
+                return new RunResult(ErrorCode.LightControllerFailToConnect, ex);
+            }
         }
 
         public bool GetLgihtValue(int chanel, out int value)
