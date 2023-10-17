@@ -136,14 +136,7 @@ public struct PlcParma
     /// <summary>
     /// 串口设置的参数
     /// </summary>
-    public SerialPort serialPortParma = new SerialPort
-    {
-        PortName = "COM1",
-        BaudRate = 9600,
-        Parity = Parity.None,
-        DataBits = 7,
-        StopBits = StopBits.One
-    };
+    public SerialPortParma serialPortParma = new SerialPortParma();
 
     public bool IsShortConnect = false;
 
@@ -151,22 +144,4 @@ public struct PlcParma
     /// 构造函数
     /// </summary>
     public PlcParma() { }
-}
-
-public static class PlcTypeExtension
-{
-    internal static DeltaSeries ToAdapte(this PlcType t)
-    {
-        switch(t)
-        {
-            case PlcType.Delta_AH:
-                 return DeltaSeries.AS;
-            case PlcType.Delta_RTU:
-                 return DeltaSeries.Dvp;
-            case PlcType.Delta_DVP:
-                return DeltaSeries.Dvp;
-            default:
-                return DeltaSeries.Dvp;
-        }
-    }
 }

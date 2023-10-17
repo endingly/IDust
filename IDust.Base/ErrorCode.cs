@@ -21,6 +21,11 @@ public enum ErrorCode : short
     PlcFailToDisconnect,
     PlcSetStationFail,
 
+    SerialPortFailToRead,
+    SerialPortFailToWrite,
+
+    LightControllerFailToConnect,
+    LightControllerFailToDisconnect,
 
     // Success
     PlcConnected = 1000,
@@ -30,7 +35,13 @@ public enum ErrorCode : short
     PlcWriteSuccess,
     PlcClearDataSuccess,
     PlcDisconnectSuccess,
-    PlcSetStationSuccess
+    PlcSetStationSuccess,
+
+    SerialPortReadSuccess,
+    SerialPortWriteSuccess,
+
+    LightControllerConnected,
+    LightControllerDisconnected,
 }
 
 public static class ErrorCodeExtension
@@ -55,6 +66,11 @@ public static class ErrorCodeExtension
             ErrorCode.PlcFailToDisconnect => "PLC 断开连接失败.",
             ErrorCode.PlcSetStationFail => "PLC 设置站号失败.",
 
+            ErrorCode.SerialPortFailToRead => "串口读取数据失败.",
+            ErrorCode.SerialPortFailToWrite => "串口写入数据失败.",
+
+            ErrorCode.LightControllerFailToConnect => "光源控制器连接失败.",
+
             ErrorCode.PlcConnected => "PLC 已连接.",
             ErrorCode.PlcReconnectSuccess => "PLC 重连成功.",
             ErrorCode.PlcInitSuccess => "PLC 初始化成功.",
@@ -63,6 +79,11 @@ public static class ErrorCodeExtension
             ErrorCode.PlcClearDataSuccess => "PLC 清空数据成功.",
             ErrorCode.PlcDisconnectSuccess => "PLC 断开连接成功.",
             ErrorCode.PlcSetStationSuccess => "PLC 设置站号成功.",
+
+            ErrorCode.SerialPortReadSuccess => "串口读取数据成功.",
+            ErrorCode.SerialPortWriteSuccess => "串口写入数据成功.",
+
+            ErrorCode.LightControllerConnected => "光源控制器连接成功.",
             _ => "未知错误.",
         };
     }

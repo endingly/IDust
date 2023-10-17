@@ -39,7 +39,7 @@ public class PlcModbusRtu : PlcBase, IPlcReadWriteable<ModbusRtu>, IConnectClose
             {
                 sp.PortName = parma.serialPortParma.PortName;
                 sp.BaudRate = parma.serialPortParma.BaudRate;
-                sp.BreakState = parma.serialPortParma.BreakState;
+                sp.StopBits = parma.serialPortParma.StopBits;
                 sp.DataBits = parma.serialPortParma.DataBits;
                 sp.Parity = parma.serialPortParma.Parity;
             });
@@ -55,7 +55,7 @@ public class PlcModbusRtu : PlcBase, IPlcReadWriteable<ModbusRtu>, IConnectClose
             {
                 sp.PortName = parma.serialPortParma.PortName;
                 sp.BaudRate = parma.serialPortParma.BaudRate;
-                sp.BreakState = parma.serialPortParma.BreakState;
+                sp.StopBits = parma.serialPortParma.StopBits;
                 sp.DataBits = parma.serialPortParma.DataBits;
                 sp.Parity = parma.serialPortParma.Parity;
             });
