@@ -19,7 +19,6 @@ public class LightControllerFactory
 
     public LightControllerFactory(LightControllerType type, in SerialPortParma parma)
     {
-        _lightControllerType = type;
         switch (type)
         {
             case LightControllerType.CST:
