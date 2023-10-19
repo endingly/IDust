@@ -9,8 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MvCamCtrl.Net" Version="4.1.0" />
     <PackageReference Include="MVTec.HalconDotNet" Version="23050.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IDust.Base\IDust.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MvCamCtrl.Net">
+      <HintPath>C:\Program Files (x86)\MVS\Development\DotNet\AnyCpu\MvCamCtrl.Net.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

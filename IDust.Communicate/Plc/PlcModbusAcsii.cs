@@ -23,6 +23,7 @@ public class PlcModbusAscii : PlcBase, IPlcReadWriteable<ModbusAscii>, IConnectC
         this.parma = parma;
         Init();
         timer.Elapsed += Reconnect;
+        var r = this.client.LogNet;
     }
 #pragma warning restore CS8618, CS8622
     #endregion
