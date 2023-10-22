@@ -151,7 +151,7 @@ public class Logger:IDisposable
     #endregion
 
     #region private methods
-    public void WriteLog(LogLevel level, string message)
+    private void WriteLog(LogLevel level, string message)
     {
         string str = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [{_keyWord.GetString()}] [{level.GetString()}] {message}";
         if (ConsoleEnable)
@@ -165,7 +165,7 @@ public class Logger:IDisposable
         }
     }
 
-    public void WriteLog(LogLevel level, string message, Exception ex)
+    private void WriteLog(LogLevel level, string message, Exception ex)
     {
         string str = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [{_keyWord.GetString()}] [{level.GetString()}] {message} -> {ex.Message}";
         if (ConsoleEnable)

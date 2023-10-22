@@ -92,6 +92,48 @@ public class RunResult
             isSuccess = false;
         }
     }
+
+    public void Reset(ErrorCode er, Exception ex)
+    {
+        message = er.GetString() + "[" + ex.Message + "]";
+        errorCode = er;
+        if (er >= ErrorCode.PlcConnected)
+        {
+            isSuccess = true;
+        }
+        else
+        {
+            isSuccess = false;
+        }
+    }
+
+    public void Reset(ErrorCode er, string msg)
+    {
+        message = er.GetString() + "->" + msg;
+        errorCode = er;
+        if (er >= ErrorCode.PlcConnected)
+        {
+            isSuccess = true;
+        }
+        else
+        {
+            isSuccess = false;
+        }
+    }
+
+    public void Reset(ErrorCode er, string msg, System.Exception ex)
+    {
+        message = $"{er.GetString()} -> {msg} [{ex.Message}]";
+        errorCode = er;
+        if (er >= ErrorCode.PlcConnected)
+        {
+            isSuccess = true;
+        }
+        else
+        {
+            isSuccess = false;
+        }
+    }
     #endregion
 }
 

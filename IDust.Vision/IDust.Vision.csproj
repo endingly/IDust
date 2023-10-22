@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+	<TargetFramework>.net7</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -9,17 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="MvCamCtrl.Net" Version="4.1.0">
+		  <NoWarn>NU1701</NoWarn>
+	  </PackageReference>
     <PackageReference Include="MVTec.HalconDotNet" Version="23050.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IDust.Base\IDust.Base.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="MvCamCtrl.Net">
-      <HintPath>C:\Program Files (x86)\MVS\Development\DotNet\AnyCpu\MvCamCtrl.Net.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

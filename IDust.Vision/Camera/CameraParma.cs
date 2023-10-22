@@ -63,17 +63,16 @@ public struct CameraInitParma
     }
 }
 
-public struct CameraLightParma
+public struct CameraParma
 {
     public float CameraExposureTime;
     public float CameraGain;
     public float CameraFrameRate;
 
-    public CameraLightParma()
+    public CameraParma()
     {
         CameraExposureTime = 5000;
         CameraGain = 0;
         CameraFrameRate = 27;
     }
 }
-
