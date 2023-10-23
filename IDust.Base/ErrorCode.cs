@@ -36,6 +36,8 @@ public enum ErrorCode : short
     CameraFailToStopVideo,
     CameraFailToGetIoStatus,
     CameraFailToSetParma,
+    CameraFailToSaveParma,
+    CameraFailToGetParma,
 
     // Success
     PlcConnected = 1000,
@@ -61,7 +63,7 @@ public enum ErrorCode : short
     CameraGetIoStatusSuccess,
     CameraSetParmaSuccess,
     CameraSaveParmaSuccess,
-    CameraFailToSaveParma
+    CameraGetParmaSuccess
 }
 
 public static class ErrorCodeExtension
@@ -101,6 +103,7 @@ public static class ErrorCodeExtension
             ErrorCode.CameraFailToGetIoStatus => "相机获取IO状态失败.",
             ErrorCode.CameraFailToSetParma => "相机设置参数失败.",
             ErrorCode.CameraFailToSaveParma => "相机保存参数失败.",
+            ErrorCode.CameraFailToGetParma => "相机获取参数失败.",
 
             ErrorCode.PlcConnected => "PLC 已连接.",
             ErrorCode.PlcReconnectSuccess => "PLC 重连成功.",
@@ -124,6 +127,7 @@ public static class ErrorCodeExtension
             ErrorCode.CameraGetIoStatusSuccess => "相机获取IO状态成功.",
             ErrorCode.CameraSetParmaSuccess => "相机设置参数成功.",
             ErrorCode.CameraSaveParmaSuccess => "相机保存参数成功.",
+            ErrorCode.CameraGetParmaSuccess => "相机获取参数成功.",
             _ => "未知错误.",
         };
     }

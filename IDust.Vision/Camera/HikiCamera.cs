@@ -3,6 +3,7 @@ using IDust.Base;
 using MvCamCtrl.NET;
 using MvCamCtrl.NET.CameraParams;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -18,13 +19,74 @@ public enum HikiCommandType
 }
 
 /// <summary>
-/// note: 此类存在装箱拆箱，不适合大量使用
+/// 此结构体由于精细化了分布
+/// <para>bool/lonog/float/uint 共用一段内存</para>
+/// <para>故而它总长度是 8 byte</para>
 /// </summary>
+[StructLayout(LayoutKind.Explicit)]
+public struct CommandValue
+{
+    [FieldOffset(0)]
+    public bool BoolValue;
+    [FieldOffset(0)]
+    public long LongValue;
+    [FieldOffset(0)]
+    public float FloatValue;
+    [FieldOffset(0)]
+    public uint EnumValue;
+
+    public CommandValue()
+    {
+        this.LongValue = 0;
+    }
+
+    public CommandValue(bool value)
+    {
+        this.BoolValue = value;
+    }
+
+    public CommandValue(long value)
+    {
+        this.LongValue = value;
+    }
+
+    public CommandValue(float value)
+    {
+        this.FloatValue = value;
+    }
+
+    public CommandValue(uint value)
+    {
+        this.EnumValue = value;
+    }
+
+    public static implicit operator bool(CommandValue value)
+    {
+        return value.BoolValue;
+    }
+
+    public static implicit operator long(CommandValue value)
+    {
+        return value.LongValue;
+    }
+
+    public static implicit operator uint(CommandValue value)
+    {
+        return value.EnumValue;
+    }
+
+    public static implicit operator float(CommandValue value)
+    {
+        return value.FloatValue;
+    }
+}
+
+
 public struct HikiCameraExpertParma
 {
     public HikiCommandType CommandType;
     public string CommandName;
-    public object CommandValue;
+    public CommandValue CommandValue;
 }
 
 public class HikiCamera : CameraBase
@@ -40,12 +102,12 @@ public class HikiCamera : CameraBase
     /// <summary>
     /// 高级参数列表，应构造函数中提供
     /// </summary>
-    private List<HikiCameraExpertParma>? expertParmas;
+    private Dictionary<string, HikiCameraExpertParma> expertParmas;
 
     public HikiCamera(in CameraInitParma initParma) : base(initParma)
     {
         camera = new CCamera();
-        expertParmas = new List<HikiCameraExpertParma>();
+        expertParmas = new Dictionary<string, HikiCameraExpertParma>();
     }
 
     #region private methods
@@ -573,10 +635,9 @@ public class HikiCamera : CameraBase
         return flag;
     }
     #endregion
-
-    public RunResult CameraSetExpertParma(HikiCameraExpertParma parma)
+    public RunResult CameraSetExpertParma(in HikiCameraExpertParma parma)
     {
-        RunResult result = new RunResult();
+        RunResult result = new();
         if (camera == null)
             result.Reset(ErrorCode.CameraNotFound);
         else
@@ -586,31 +647,46 @@ public class HikiCamera : CameraBase
             {
                 case HikiCommandType.Command:
                     if (camera.SetCommandValue(parma.CommandName) == CErrorDefine.MV_OK)
+                    {
                         result.Reset(ErrorCode.CameraSetParmaSuccess);
+                        expertParmas.Add(parma.CommandName, parma);
+                    }
                     else
                         result.Reset(ErrorCode.CameraFailToSetParma);
                     break;
                 case HikiCommandType.Bool:
-                    if (camera.SetBoolValue(parma.CommandName, (bool)parma.CommandValue) == CErrorDefine.MV_OK)
+                    if (camera.SetBoolValue(parma.CommandName, parma.CommandValue) == CErrorDefine.MV_OK)
+                    {
                         result.Reset(ErrorCode.CameraSetParmaSuccess);
+                        expertParmas.Add(parma.CommandName, parma);
+                    }
                     else
                         result.Reset(ErrorCode.CameraFailToSetParma);
                     break;
                 case HikiCommandType.Int:
-                    if (camera.SetIntValue(parma.CommandName, (int)parma.CommandValue) == CErrorDefine.MV_OK)
+                    if (camera.SetIntValue(parma.CommandName, parma.CommandValue) == CErrorDefine.MV_OK)
+                    {
                         result.Reset(ErrorCode.CameraSetParmaSuccess);
+                        expertParmas.Add(parma.CommandName, parma);
+                    }
                     else
                         result.Reset(ErrorCode.CameraFailToSetParma);
                     break;
                 case HikiCommandType.Float:
-                    if (camera.SetFloatValue(parma.CommandName, (float)parma.CommandValue) == CErrorDefine.MV_OK)
+                    if (camera.SetFloatValue(parma.CommandName, parma.CommandValue) == CErrorDefine.MV_OK)
+                    {
                         result.Reset(ErrorCode.CameraSetParmaSuccess);
+                        expertParmas.Add(parma.CommandName, parma);
+                    }
                     else
                         result.Reset(ErrorCode.CameraFailToSetParma);
                     break;
                 case HikiCommandType.Enum:
-                    if (camera.SetEnumValue(parma.CommandName, (uint)parma.CommandValue) == CErrorDefine.MV_OK)
+                    if (camera.SetEnumValue(parma.CommandName, parma.CommandValue) == CErrorDefine.MV_OK)
+                    {
                         result.Reset(ErrorCode.CameraSetParmaSuccess);
+                        expertParmas.Add(parma.CommandName, parma);
+                    }
                     else
                         result.Reset(ErrorCode.CameraFailToSetParma);
                     break;
@@ -621,6 +697,13 @@ public class HikiCamera : CameraBase
             camera.StartGrabbing();
         }
         return result;
+    }
+    public RunResult CameraGetExpertParma(string commandName, out HikiCameraExpertParma parma)
+    {
+        if (expertParmas.TryGetValue(commandName,out parma))
+            return new RunResult(ErrorCode.CameraGetParmaSuccess);
+        else
+            return new RunResult(ErrorCode.CameraFailToGetParma);
     }
 }
 
