@@ -18,9 +18,9 @@ public class CameraBase
     {
         this.initParma = initParma;
         this.lightParma = lightParma;
-        ECameraIsRunned += OnCameraIsRunned;
-        ECameraSendMessage += OnCameraSendMessage;
-        ECameraConnectStatusChanged += OnCameraConnectStatusChanged;
+        //ECameraIsRunned += OnCameraIsRunned;
+        //ECameraSendMessage += OnCameraSendMessage;
+        //ECameraConnectStatusChanged += OnCameraConnectStatusChanged;
         SelectFloderPath = string.Empty;
         DeviceListAcqUserName = new List<string>();
     }
@@ -29,9 +29,9 @@ public class CameraBase
     {
         this.initParma = initParma;
         lightParma = new CameraParma();
-        ECameraIsRunned += OnCameraIsRunned;
-        ECameraSendMessage += OnCameraSendMessage;
-        ECameraConnectStatusChanged += OnCameraConnectStatusChanged;
+        //ECameraIsRunned += OnCameraIsRunned;
+        //ECameraSendMessage += OnCameraSendMessage;
+        //ECameraConnectStatusChanged += OnCameraConnectStatusChanged;
         SelectFloderPath = string.Empty;
         DeviceListAcqUserName = new List<string>();
     }
@@ -54,17 +54,17 @@ public class CameraBase
     #region event callback methods
     protected virtual void OnCameraIsRunned()
     {
-
+        ECameraIsRunned?.Invoke();
     }
 
     protected virtual void OnCameraSendMessage(int type, string msg, int value)
     {
-
+        ECameraSendMessage?.Invoke(type, msg, value);
     }
 
     protected virtual void OnCameraConnectStatusChanged(int userData, bool value)
     {
-
+        ECameraConnectStatusChanged?.Invoke(userData, value);
     }
     #endregion
 
