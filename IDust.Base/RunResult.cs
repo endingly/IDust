@@ -135,6 +135,9 @@ public class RunResult
         }
     }
     #endregion
+
+    #region operator override
+    #endregion
 }
 
 public class RunResult<T> : RunResult

@@ -39,6 +39,10 @@ public enum ErrorCode : short
     CameraFailToSaveParma,
     CameraFailToGetParma,
 
+    VisionToolFailToInit,
+    VisionToolFailToSaveParma,
+    VisionToolImageInvalid,
+
     // Success
     PlcConnected = 1000,
     PlcReconnectSuccess,
@@ -63,7 +67,11 @@ public enum ErrorCode : short
     CameraGetIoStatusSuccess,
     CameraSetParmaSuccess,
     CameraSaveParmaSuccess,
-    CameraGetParmaSuccess
+    CameraGetParmaSuccess,
+
+    VisionToolInitSuccess,
+    VisionToolSaveParmaSuccess,
+    VisionToolRunSuccess,
 }
 
 public static class ErrorCodeExtension
@@ -105,6 +113,10 @@ public static class ErrorCodeExtension
             ErrorCode.CameraFailToSaveParma => "相机保存参数失败.",
             ErrorCode.CameraFailToGetParma => "相机获取参数失败.",
 
+            ErrorCode.VisionToolFailToInit => "视觉工具初始化失败.",
+            ErrorCode.VisionToolFailToSaveParma => "视觉工具保存参数失败.",
+            ErrorCode.VisionToolImageInvalid => "视觉工具输入图像无效.",
+
             ErrorCode.PlcConnected => "PLC 已连接.",
             ErrorCode.PlcReconnectSuccess => "PLC 重连成功.",
             ErrorCode.PlcInitSuccess => "PLC 初始化成功.",
@@ -128,6 +140,10 @@ public static class ErrorCodeExtension
             ErrorCode.CameraSetParmaSuccess => "相机设置参数成功.",
             ErrorCode.CameraSaveParmaSuccess => "相机保存参数成功.",
             ErrorCode.CameraGetParmaSuccess => "相机获取参数成功.",
+
+            ErrorCode.VisionToolInitSuccess => "视觉工具初始化成功.",
+            ErrorCode.VisionToolSaveParmaSuccess => "视觉工具保存参数成功.",
+            ErrorCode.VisionToolRunSuccess => "视觉工具运行成功.",
             _ => "未知错误.",
         };
     }

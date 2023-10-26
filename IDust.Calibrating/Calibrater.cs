@@ -51,6 +51,13 @@ public class Calibrater
     #endregion
 
     #region constructor
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    /// <param name="calibrate_name"></param>
+    /// <param name="type"></param>
+    /// <param name="image_width"></param>
+    /// <param name="image_height"></param>
     public Calibrater(string calibrate_name, CalibrateApplyType type, int image_width = 3072, int image_height = 2048)
     {
         string s = Environment.CurrentDirectory;
@@ -109,6 +116,17 @@ public class Calibrater
                              line_two.start.x, line_two.start.y, line_two.end.x, line_two.end.y,
                              out HTuple angle);
         return angle;
+    }
+    #endregion
+
+    #region property
+    /// <summary>
+    /// 获取或设置标定所使用标定类型
+    /// </summary>
+    public CalibrateApplyType CalibrateApplyType
+    {
+        get => Ctype;
+        set => Ctype = value;
     }
     #endregion
 }

@@ -5,6 +5,9 @@ namespace IDust.Calibrating;
 /// </summary>
 public enum CalibrateType
 {
+    /// <summary>
+    /// 九点标定
+    /// </summary>
     OnlyNine,
 
     /// <summary>

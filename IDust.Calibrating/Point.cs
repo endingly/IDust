@@ -2,7 +2,7 @@
 namespace IDust.Calibrating;
 
 /// <summary>
-/// 点
+/// 2维点
 /// </summary>
 public struct Point
 {
@@ -15,20 +15,13 @@ public struct Point
     /// y 坐标
     /// </summary>
     public double y;
-}
-
-/// <summary>
-/// 线
-/// </summary>
-public struct Line
-{
-    /// <summary>
-    /// 起点
-    /// </summary>
-    public Point start;
 
     /// <summary>
-    /// 终点
-    /// </summary>
-    public Point end;
+    /// 初始化构造函数
+    /// <summary>
+    public Point(double x, double y)
+    {
+        this.x = x;
+        this.y = y;
+    }
 }

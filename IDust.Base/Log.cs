@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.VisualBasic;
+using System.Text;
 using System.Timers;
 
 namespace IDust.Base;
@@ -9,7 +10,8 @@ public enum LogKeyword
     Vision,
     Calibrating,
     UI,
-    Camera
+    Camera,
+    VisionTool
 }
 
 public enum LogLevel
@@ -32,6 +34,7 @@ public static class LogExtension
             LogKeyword.Calibrating => "Calibrating",
             LogKeyword.UI => "UI",
             LogKeyword.Camera => "Camera",
+            LogKeyword.VisionTool => "VisionTool",
             _ => "Unknow",
         };
     }
@@ -148,6 +151,60 @@ public class Logger:IDisposable
     {
         WriteLog(LogLevel.Fatal, message, ex);
     }
+
+    public void Debug(string message, string SupInformation, Exception ex)
+    {
+        #if DEBUG
+        WriteLog(LogLevel.Debug, message, SupInformation, ex);
+        #endif
+    }
+
+    public void Info(string message, string SupInformation, Exception ex)
+    {
+        WriteLog(LogLevel.Info, message, SupInformation, ex);
+    }
+
+    public void Warn(string message, string SupInformation, Exception ex)
+    {
+        WriteLog(LogLevel.Warn, message, SupInformation, ex);
+    }
+
+    public void Error(string message, string SupInformation, Exception ex)
+    {
+        WriteLog(LogLevel.Error, message, SupInformation, ex);
+    }
+
+    public void Fatal(string message, string SupInformation, Exception ex)
+    {
+        WriteLog(LogLevel.Fatal, message, SupInformation, ex);
+    }
+
+    public void Debug(string message, string SupInformation)
+    {
+        #if DEBUG
+        WriteLog(LogLevel.Debug, message, SupInformation);
+        #endif
+    }
+
+    public void Info(string message, string SupInformation)
+    {
+        WriteLog(LogLevel.Info, message, SupInformation);
+    }
+
+    public void Warn(string message, string SupInformation)
+    {
+        WriteLog(LogLevel.Warn, message, SupInformation);
+    }
+
+    public void Error(string message, string SupInformation)
+    {
+        WriteLog(LogLevel.Error, message, SupInformation);
+    }
+
+    public void Fatal(string message, string SupInformation)
+    {
+        WriteLog(LogLevel.Fatal, message, SupInformation);
+    }
     #endregion
 
     #region private methods
@@ -179,6 +236,33 @@ public class Logger:IDisposable
         }
     }
 
+    private void WriteLog(LogLevel level, string message, string SupInformation, Exception ex)
+    {
+        string str = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [{_keyWord.GetString()}] [{level.GetString()}] {message} {SupInformation} -> {ex.Message}";
+        if (ConsoleEnable)
+        {
+            Console.WriteLine(str);
+        }
+        if (FileStreamEnable)
+        {
+            stream.Write(Encoding.UTF8.GetBytes(str));
+            stream.Flush();
+        }
+    }
+
+    private void WriteLog(LogLevel level, string message, string SupInformation)
+    {
+        string str = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [{_keyWord.GetString()}] [{level.GetString()}] {message} {SupInformation}";
+        if (ConsoleEnable)
+        {
+            Console.WriteLine(str);
+        }
+        if (FileStreamEnable)
+        {
+            stream.Write(Encoding.UTF8.GetBytes(str));
+            stream.Flush();
+        }
+    }
 
     #endregion
 
