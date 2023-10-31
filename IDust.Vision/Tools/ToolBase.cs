@@ -13,7 +13,7 @@ public class ToolBase
     public virtual string ToolName { get; set; } = "DefaltToolName";
     public string ToolWorkDir { get => Path.Combine(Environment.CurrentDirectory, ToolName); }
     public bool IsReady { get; set; } = false;
-    internal string ParmaSaveName { get => Path.Combine(this.ToolWorkDir, "parma.json"); }
+    internal string ParmaSaveFilePath { get => Path.Combine(this.ToolWorkDir, "parma.json"); }
     
     public ToolBase()
     {

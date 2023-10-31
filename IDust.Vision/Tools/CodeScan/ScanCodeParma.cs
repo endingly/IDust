@@ -1,11 +1,7 @@
 ﻿using HalconDotNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Emit;
 
-namespace IDust.Vision.Tools;
+namespace IDust.Vision.Tools.CodeScan;
 
 /// <summary>
 /// 扫码结果排序
@@ -48,36 +44,9 @@ public enum CodeType
     /// </summary>
     BarCode,
     /// <summary>
-    /// 二维码与条形码都需要扫码
+    /// 混合类型
     /// </summary>
-    QRCodeAndBarCode,
-}
-
-/// <summary>
-/// 条形码特有参数
-/// </summary>
-public struct ScanBarCodeParma
-{
-    /// <summary>
-    /// 对比度
-    /// </summary>
-    public double BarMeasThresh;
-    /// <summary>
-    /// 绝对对比度
-    /// </summary>
-    public double BarMeasThreshAbs;
-    /// <summary>
-    /// 目标大小
-    /// </summary>
-    public double BarElementSize;
-}
-
-/// <summary>
-/// 条形码类型
-/// </summary>
-public enum BarCodeType
-{
-    Code128,
+    Mixed,
 }
 
 
@@ -97,15 +66,23 @@ public class ScanCodeActionParma : IDisposable
     /// <summary>
     /// 条码检测区域
     /// </summary>
-    public HRegion CheckCodeRegion { get; set; } = default;
+    public HRegion CheckCodeRegion { get; set; }
     /// <summary>
     /// 至少需要寻找的条码数量
     /// </summary>
     public int FindLeastNumber { get; set; } = 1;
-    public bool BarCodeEnable { get; set; } = false;
-    public bool QRCodeEnable { get; set; } = false;
-    public BarCodeType BarCodeType { get; set; } = BarCodeType.Code128;
+    /// <summary>
+    /// 扫码动作后处理所需要的详细参数
+    /// </summary>
+    public ScanCodeParmaBase ScanCodeParma { get; set; }
+
     public ScanCodeActionParma() { }
+
+    public ScanCodeActionParma(ScanCodeParmaBase scp, HRegion ccr)
+    {
+        CheckCodeRegion = ccr;
+        ScanCodeParma = scp;
+    }
 
     public void Dispose()
     {
@@ -125,7 +102,7 @@ public class ScanCodeToolParma : IDisposable
     /// <summary>
     /// 扫码类型
     /// </summary>
-    public CodeType CodeType { get; set; } = CodeType.QRCode;
+    public CodeType CodeType { get; set; } = CodeType.BarCode;
     /// <summary>
     /// 区域个数
     /// </summary>
@@ -133,18 +110,17 @@ public class ScanCodeToolParma : IDisposable
     /// <summary>
     /// 扫码动作列表
     /// </summary>
-    public List<ScanCodeActionParma> ActionParmas { get; set; }
+    public List<ScanCodeActionParma> ActionParmas { get; set; } = new List<ScanCodeActionParma>();
     /// <summary>
     /// 是否启用至少寻找条码数量
     /// </summary>
     public bool UseFindLeastEnable { get; set; } = false;
-    public ScanBarCodeParma[] barCodeParmas { get; set; } = new ScanBarCodeParma[3];
+
     public ScanCodeToolParma()
     {
-        this.ActionParmas = new List<ScanCodeActionParma>();
-        ActionParmas.Add(new ScanCodeActionParma());
+        
     }
-    
+
     public void Dispose()
     {
         ActionParmas.ForEach(x => x.Dispose());
