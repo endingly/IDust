@@ -42,6 +42,7 @@ public enum ErrorCode : short
     VisionToolFailToInit,
     VisionToolFailToSaveParma,
     VisionToolImageInvalid,
+    VisionToolFailToRun,
 
     // Success
     PlcConnected = 1000,
@@ -116,6 +117,7 @@ public static class ErrorCodeExtension
             ErrorCode.VisionToolFailToInit => "视觉工具初始化失败.",
             ErrorCode.VisionToolFailToSaveParma => "视觉工具保存参数失败.",
             ErrorCode.VisionToolImageInvalid => "视觉工具输入图像无效.",
+            ErrorCode.VisionToolFailToRun => "视觉工具运行失败.",
 
             ErrorCode.PlcConnected => "PLC 已连接.",
             ErrorCode.PlcReconnectSuccess => "PLC 重连成功.",

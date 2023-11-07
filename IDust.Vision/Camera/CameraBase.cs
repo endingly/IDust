@@ -18,22 +18,22 @@ public class CameraBase
     {
         this.initParma = initParma;
         this.lightParma = lightParma;
-        //ECameraIsRunned += OnCameraIsRunned;
-        //ECameraSendMessage += OnCameraSendMessage;
-        //ECameraConnectStatusChanged += OnCameraConnectStatusChanged;
+        ECameraIsRunned += OnCameraIsRunned;
+        ECameraSendMessage += OnCameraSendMessage;
+        ECameraConnectStatusChanged += OnCameraConnectStatusChanged;
         SelectFloderPath = string.Empty;
-        DeviceListAcqUserName = new List<string>();
+        DeviceListAcqUserName = [];
     }
 
     public CameraBase(in CameraInitParma initParma)
     {
         this.initParma = initParma;
         lightParma = new CameraParma();
-        //ECameraIsRunned += OnCameraIsRunned;
-        //ECameraSendMessage += OnCameraSendMessage;
-        //ECameraConnectStatusChanged += OnCameraConnectStatusChanged;
+        ECameraIsRunned += OnCameraIsRunned;
+        ECameraSendMessage += OnCameraSendMessage;
+        ECameraConnectStatusChanged += OnCameraConnectStatusChanged;
         SelectFloderPath = string.Empty;
-        DeviceListAcqUserName = new List<string>();
+        DeviceListAcqUserName = [];
     }
     #endregion
 

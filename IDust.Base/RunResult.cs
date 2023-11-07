@@ -144,6 +144,11 @@ public class RunResult<T> : RunResult
 {
     public T? Content;
 
+    public RunResult(ErrorCode errcode) : base(errcode)
+    {
+        Content = default;
+    }
+
     public RunResult(ErrorCode errcode, T? c) : base(errcode)
     {
         Content = c;
@@ -155,6 +160,11 @@ public class RunResult<T> : RunResult
     }
 
     public RunResult(ErrorCode errcode, string msg, System.Exception ex) : base(errcode, msg, ex)
+    {
+        Content = default;
+    }
+
+    public RunResult(ErrorCode errcode, string msg) : base(errcode, msg)
     {
         Content = default;
     }

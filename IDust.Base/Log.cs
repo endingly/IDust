@@ -217,8 +217,8 @@ public class Logger:IDisposable
         }
         if (FileStreamEnable)
         {
-            stream.Write(Encoding.UTF8.GetBytes(str));
-            stream.Flush();
+            stream?.Write(Encoding.UTF8.GetBytes(str));
+            stream?.Flush();
         }
     }
 
@@ -231,8 +231,8 @@ public class Logger:IDisposable
         }
         if (FileStreamEnable)
         {
-            stream.Write(Encoding.UTF8.GetBytes(str));
-            stream.Flush();
+            stream?.Write(Encoding.UTF8.GetBytes(str));
+            stream?.Flush();
         }
     }
 
@@ -245,8 +245,8 @@ public class Logger:IDisposable
         }
         if (FileStreamEnable)
         {
-            stream.Write(Encoding.UTF8.GetBytes(str));
-            stream.Flush();
+            stream?.Write(Encoding.UTF8.GetBytes(str));
+            stream?.Flush();
         }
     }
 
@@ -259,8 +259,8 @@ public class Logger:IDisposable
         }
         if (FileStreamEnable)
         {
-            stream.Write(Encoding.UTF8.GetBytes(str));
-            stream.Flush();
+            stream?.Write(Encoding.UTF8.GetBytes(str));
+            stream?.Flush();
         }
     }
 
@@ -268,8 +268,8 @@ public class Logger:IDisposable
 
     public void Dispose()
     {
-        stream.Flush();
-        stream.Dispose();
+        stream?.Flush();
+        stream?.Dispose();
     }
 }
 
@@ -308,7 +308,7 @@ public static class Log
         }
     }
 
-    private static void Tommrow(object sender, ElapsedEventArgs args)
+    private static void Tommrow(object? sender, ElapsedEventArgs args)
     {
         dateTime = DateTime.Now.ToString("yyyy-MM-dd");
         timer.Interval = (DateTime.Now.AddDays(1) - DateTime.Now).TotalMilliseconds;
