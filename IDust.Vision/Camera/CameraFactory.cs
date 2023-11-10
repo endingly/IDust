@@ -4,13 +4,11 @@ public static class CameraFactory
 {
     public static T? CreatCamera<T>(CameraInitParma parma) where T : CameraBase
     {
-        switch (parma.CameraType)
+        return parma.CameraType switch
         {
-            case CameraType.HikiVision:
-                return new HikiCamera(parma) as T;
-            default:
-                return new HikiCamera(parma) as T;
-        }
+            CameraType.HikiVision => new HikiCamera(parma) as T,
+            _ => new HikiCamera(parma) as T,
+        };
     }
 }
 

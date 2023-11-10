@@ -6,10 +6,25 @@ namespace IDust.Vision.Camera;
 public class CameraBase
 {
     #region member
+    /// <summary>
+    /// 相机的初始化参数
+    /// </summary>
     protected CameraInitParma initParma;
+    /// <summary>
+    /// 相机使用过程中的设置参数
+    /// </summary>
     protected CameraParma lightParma;
+    /// <summary>
+    /// 运行事件
+    /// </summary>
     public event D_void_void_Parma ECameraIsRunned;
+    /// <summary>
+    /// 相机发送信息事件
+    /// </summary>
     public event D_void_int_string_int_Parma ECameraSendMessage;
+    /// <summary>
+    /// 相机连接状态改变事件
+    /// </summary>
     public event D_void_int_bool_Parma ECameraConnectStatusChanged;
     #endregion
 
@@ -54,17 +69,17 @@ public class CameraBase
     #region event callback methods
     protected virtual void OnCameraIsRunned()
     {
-        ECameraIsRunned?.Invoke();
+        throw new NotImplementedException();
     }
 
     protected virtual void OnCameraSendMessage(int type, string msg, int value)
     {
-        ECameraSendMessage?.Invoke(type, msg, value);
+        throw new NotImplementedException();
     }
 
     protected virtual void OnCameraConnectStatusChanged(int userData, bool value)
     {
-        ECameraConnectStatusChanged?.Invoke(userData, value);
+        throw new NotImplementedException();
     }
     #endregion
 
@@ -84,7 +99,7 @@ public class CameraBase
         throw new NotImplementedException();
     }
 
-    public virtual RunResult TaskPicture()
+    public virtual RunResult TakePicture()
     {
         throw new NotImplementedException();
     }
@@ -111,6 +126,11 @@ public class CameraBase
     }
 
     public virtual RunResult CameraSetParma(in CameraParma parma)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected virtual RunResult Reconnect()
     {
         throw new NotImplementedException();
     }

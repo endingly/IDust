@@ -2,8 +2,6 @@
 using IDust.Base;
 using MvCamCtrl.NET;
 using MvCamCtrl.NET.CameraParams;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -20,11 +18,11 @@ public enum HikiCommandType
 
 /// <summary>
 /// 此结构体由于精细化了分布
-/// <para>bool/lonog/float/uint 共用一段内存</para>
-/// <para>故而它总长度是 8 byte</para>
+/// <para><c>bool/lonog/float/uint</c> 共用一段内存</para>
+/// <para>故而它总长度是 <c>8 byte</c></para>
 /// </summary>
 [StructLayout(LayoutKind.Explicit)]
-public struct CommandValue
+public struct HikiCommandValue
 {
     [FieldOffset(0)]
     public bool BoolValue;
@@ -35,79 +33,98 @@ public struct CommandValue
     [FieldOffset(0)]
     public uint EnumValue;
 
-    public CommandValue()
+    public HikiCommandValue()
     {
         this.LongValue = 0;
     }
 
-    public CommandValue(bool value)
+    public HikiCommandValue(bool value)
     {
         this.BoolValue = value;
     }
 
-    public CommandValue(long value)
+    public HikiCommandValue(long value)
     {
         this.LongValue = value;
     }
 
-    public CommandValue(float value)
+    public HikiCommandValue(float value)
     {
         this.FloatValue = value;
     }
 
-    public CommandValue(uint value)
+    public HikiCommandValue(uint value)
     {
         this.EnumValue = value;
     }
 
-    public static implicit operator bool(CommandValue value)
+    public static implicit operator bool(HikiCommandValue value)
     {
         return value.BoolValue;
     }
 
-    public static implicit operator long(CommandValue value)
+    public static implicit operator long(HikiCommandValue value)
     {
         return value.LongValue;
     }
 
-    public static implicit operator uint(CommandValue value)
+    public static implicit operator uint(HikiCommandValue value)
     {
         return value.EnumValue;
     }
 
-    public static implicit operator float(CommandValue value)
+    public static implicit operator float(HikiCommandValue value)
     {
         return value.FloatValue;
     }
 }
 
-
+/// <summary>
+/// 海康相机的高级参数设置结构体
+/// </summary>
 public struct HikiCameraExpertParma
 {
+    /// <summary>
+    /// 命令类型
+    /// </summary>
     public HikiCommandType CommandType;
+    /// <summary>
+    /// 命令名称 <c>key</c>
+    /// </summary>
     public string CommandName;
-    public CommandValue CommandValue;
+    /// <summary>
+    /// 命令值 <c>value</c>
+    /// </summary>
+    public HikiCommandValue CommandValue;
 }
 
 public class HikiCamera : CameraBase
 {
-    private CCamera? camera;
+    /// <summary>
+    /// 相机控制句柄本体
+    /// </summary>
+    private CCamera? camera = new();
     private cbOutputExdelegate? output;
     private cbExceptiondelegate? exception;
+    /// <summary>
+    /// 拍摄所得到图片
+    /// </summary>
     private HImage? image;
-    private MV_CC_DEVICE_INFO? cameraInfo;
     private Logger logger = Log.GetLogger(LogKeyword.Camera);
+    /// <summary>
+    /// 是否设置频闪
+    /// </summary>
     private bool IsSetStorbe = false;
 
     /// <summary>
     /// 高级参数列表，应构造函数中提供
     /// </summary>
-    private Dictionary<string, HikiCameraExpertParma> expertParmas;
+    private Dictionary<string, HikiCameraExpertParma> expertParmas = new Dictionary<string, HikiCameraExpertParma>();
 
     public HikiCamera(in CameraInitParma initParma) : base(initParma)
     {
-        camera = new CCamera();
-        expertParmas = new Dictionary<string, HikiCameraExpertParma>();
+        output = OutputCallback;
+        exception = ExceptionCallback;
     }
 
     #region private methods
@@ -121,13 +138,13 @@ public class HikiCamera : CameraBase
                 image = (HImage)tmp;
                 break;
             default:
-                HOperatorSet.GenImageInterleaved(out tmp, 
-                                                 pData, 
-                                                 "bgr", 
-                                                 pFrameInfo.nWidth, pFrameInfo.nHeight, 
-                                                 -1, 
-                                                 "byte", 
-                                                 pFrameInfo.nWidth, pFrameInfo.nHeight, 
+                HOperatorSet.GenImageInterleaved(out tmp,
+                                                 pData,
+                                                 "bgr",
+                                                 pFrameInfo.nWidth, pFrameInfo.nHeight,
+                                                 -1,
+                                                 "byte",
+                                                 pFrameInfo.nWidth, pFrameInfo.nHeight,
                                                  0, 0, -1, 0);
                 image = (HImage)tmp;
                 break;
@@ -269,8 +286,8 @@ public class HikiCamera : CameraBase
         {
             List<string> result = new List<string>();
             List<CCameraInfo> cameraInfos = new List<CCameraInfo>();
-            int rvalue=CSystem.EnumDevices(CSystem.MV_GIGE_DEVICE | CSystem.MV_USB_DEVICE, ref cameraInfos);
-            if (rvalue==CErrorDefine.MV_OK)
+            int rvalue = CSystem.EnumDevices(CSystem.MV_GIGE_DEVICE | CSystem.MV_USB_DEVICE, ref cameraInfos);
+            if (rvalue == CErrorDefine.MV_OK)
             {
                 for (int i = 0; i < cameraInfos.Count; i++)
                 {
@@ -343,7 +360,7 @@ public class HikiCamera : CameraBase
         else
             return new RunResult(ErrorCode.CameraDisconnected, "Camera point is null.");
     }
-    public override RunResult TaskPicture()
+    public override RunResult TakePicture()
     {
         DateTime start = DateTime.Now;
         var result = new RunResult();
@@ -410,7 +427,7 @@ public class HikiCamera : CameraBase
                     camera.SetEnumValue("TriggerSource", (uint)MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_LINE0);
                 result.Reset(ErrorCode.CameraTakePhotoFail);
             }
-            
+
         }
         else
         {
@@ -437,7 +454,7 @@ public class HikiCamera : CameraBase
                     break;
             }
             var r = camera.SetEnumValue("TriggerMode", (uint)MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
-            if (r==CErrorDefine.MV_OK)
+            if (r == CErrorDefine.MV_OK)
             {
                 IsLive = true;
                 // TODO: a flag name is unkown
@@ -613,7 +630,7 @@ public class HikiCamera : CameraBase
     }
     public override RunResult CameraSaveParma()
     {
-        if(camera?.SetCommandValue("UserSetSave")==CErrorDefine.MV_OK)
+        if (camera?.SetCommandValue("UserSetSave") == CErrorDefine.MV_OK)
             return new RunResult(ErrorCode.CameraSaveParmaSuccess);
         else
             return new RunResult(ErrorCode.CameraFailToSaveParma);
@@ -700,10 +717,18 @@ public class HikiCamera : CameraBase
     }
     public RunResult CameraGetExpertParma(string commandName, out HikiCameraExpertParma parma)
     {
-        if (expertParmas.TryGetValue(commandName,out parma))
+        if (expertParmas.TryGetValue(commandName, out parma))
             return new RunResult(ErrorCode.CameraGetParmaSuccess);
         else
             return new RunResult(ErrorCode.CameraFailToGetParma);
+    }
+
+    protected override void OnCameraConnectStatusChanged(int userData, bool value)
+    {
+        if (value == false)
+        {
+            Reconnect();
+        }
     }
 }
 
