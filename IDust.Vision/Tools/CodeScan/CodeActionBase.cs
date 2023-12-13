@@ -14,17 +14,17 @@ public enum CodeType
     /// <summary>
     /// 自动
     /// </summary>
-    Auto = 0b0000,
+    Auto = 0,
 
     /// <summary>
     /// 一维码：Code 128
     /// </summary>
-    BarCode_Code128 = 0b0001,
+    BarCode_Code128 = 1,
 
     /// <summary>
     /// 二维码：Matrix Code
     /// </summary>
-    QrCode_MatrixCode = 0b0010,
+    QrCode_MatrixCode = 2,
 }
 
 /// <summary>

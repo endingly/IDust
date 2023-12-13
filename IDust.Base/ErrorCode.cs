@@ -77,6 +77,8 @@ public enum ErrorCode : short
 
 public static class ErrorCodeExtension
 {
+    
+
     /// <summary>
     /// 转换为消息
     /// </summary>

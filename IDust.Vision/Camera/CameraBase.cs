@@ -125,6 +125,12 @@ public class CameraBase
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="parma"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public virtual RunResult CameraSetParma(in CameraParma parma)
     {
         throw new NotImplementedException();
